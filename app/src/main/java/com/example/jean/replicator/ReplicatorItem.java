@@ -84,7 +84,7 @@ public class ReplicatorItem implements Serializable {
                 return R.drawable.ic_logo_google;
             case "GitHub":
                 return R.drawable.ic_logo_github;
-            case "facebook":
+            case "Facebook":
                 return R.drawable.ic_logo_facebook;
             default:
                 return R.drawable.ic_logo_unknown;

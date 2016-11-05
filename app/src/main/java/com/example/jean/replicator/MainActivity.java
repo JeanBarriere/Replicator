@@ -83,12 +83,29 @@ public class MainActivity extends AppCompatActivity {
             */
             if (resultCode == RESULT_OK) {
                 String contents = data.getStringExtra("SCAN_RESULT");
+                System.out.println("contents = " + contents);
                 try {
                     contents = URLDecoder.decode(contents, "UTF-8");
+                    String secret = "";
+                    String issuer = "";
                     List<String> items = Arrays.asList(Arrays.asList(contents.split("\\s*/\\s*")).get(3).split("\\s*\\?\\s*"));
                     List<String> tinfos = Arrays.asList(items.get(1).split("\\s*\\&\\s*"));
                     List<String> ainfos = Arrays.asList(items.get(0).split("\\s*:\\s*"));
-                    if (!Preferences.get(this).addItem(new ReplicatorItem(Arrays.asList(tinfos.get(0).split("\\s*=\\s*")).get(1), ainfos.get(0), ainfos.get(1))))
+                    for (String in : tinfos)
+                    {
+                        List<String> kv = Arrays.asList(in.split("\\s*=\\s*"));
+                        if (kv.get(0).equals("secret"))
+                            secret = kv.get(1);
+                        else if (kv.get(0).equals("issuer"))
+                            issuer = kv.get(1);
+                    }
+                    String username = ainfos.get(0);
+                    if (ainfos.size() == 2)
+                        username = ainfos.get(1);
+                    if (username.length() == 0 || secret.length() == 0 || issuer.length() == 0) {
+                        Snackbar.make(findViewById(R.id.content_main), "QR Code invalide", Snackbar.LENGTH_LONG).show();
+                    }
+                    if (!Preferences.get(this).addItem(new ReplicatorItem(secret, issuer, username)))
                         Snackbar.make(findViewById(R.id.content_main), "La clé du compte a été mise à jour", Snackbar.LENGTH_LONG).show();
                     else
                         Snackbar.make(findViewById(R.id.content_main), "Compte ajouté", Snackbar.LENGTH_LONG).show();
