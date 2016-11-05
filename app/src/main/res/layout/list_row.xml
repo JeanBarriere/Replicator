@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="105dp">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:id="@+id/txt_row_name"
+        android:background="#ffffff"
+        android:textSize="18sp"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:layout_height="45dp" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:background="#FFFFFF"
+        android:fadingEdge="horizontal"
+        android:weightSum="1"
+        android:layout_height="57dp">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        app:srcCompat="@drawable/ic_logo_unknown"
+        android:id="@+id/iv_row"
+        android:layout_weight="0.2"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/list_row_default_icon" />
+
+        <TextView
+        android:text="@string/list_row_default_text"
+        android:layout_width="wrap_content"
+        android:id="@+id/txt_row_key"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:elevation="0dp"
+        android:layout_weight="0.8"
+        android:layout_height="match_parent"
+        android:textColor="@color/colorPrimary"
+        android:textSize="30sp" />
+    </LinearLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:id="@+id/pb_row"
+        android:background="@android:color/background_light"
+        android:max="30000"
+        android:progress="40" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:background="#cccccc"
+        android:layout_height="2dp" />
+
+</LinearLayout>

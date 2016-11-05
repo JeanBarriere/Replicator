@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Replicator</string>
+    <string name="action_settings">Settings</string>
+    <string name="list_row_default_icon">default icon</string>
+    <string name="list_row_default_text">000 000 000</string>
+    <string name="prefs_key">replicator_prefs</string>
+</resources>
