@@ -3,16 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="105dp">
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
+    android:layout_height="85dp"
+    android:background="#ffffff">
 
     <TextView
         android:layout_width="match_parent"
         android:id="@+id/txt_row_name"
-        android:background="#ffffff"
         android:textSize="18sp"
         android:gravity="center_vertical|center_horizontal|center"
         android:layout_height="45dp" />
@@ -21,7 +17,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="horizontal" android:layout_width="match_parent"
-        android:background="#FFFFFF"
         android:fadingEdge="horizontal"
         android:weightSum="1"
         android:layout_height="57dp">
@@ -57,10 +52,5 @@
         android:background="@android:color/background_light"
         android:max="30000"
         android:progress="40" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:background="#cccccc"
-        android:layout_height="2dp" />
 
 </LinearLayout>

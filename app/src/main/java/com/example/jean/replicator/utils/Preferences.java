@@ -36,9 +36,9 @@ public class Preferences {
         SharedPreferences.Editor edit = _ctx.getSharedPreferences(_ctx.getString(R.string.prefs_key), Context.MODE_PRIVATE).edit();
         ArrayList<ReplicatorItem> items = getItems();
         for (ReplicatorItem it : items) {
-            if (it.getAccountName().equals(item.getAccountName()) && it.getDeliverName().equals(item.getDeliverName()) &&
-                    item.getSecretKey() == it.getSecretKey()) {
+            if (it.getAccountName().equals(item.getAccountName()) && it.getDeliverName().equals(item.getDeliverName())) {
                 it.setSecretKey(item.getSecretKey());
+                it.setDigits(item.getDigits());
                 edit.putString("items", _gson.toJson(items, new TypeToken<ArrayList<ReplicatorItem>>() {}.getType()));
                 edit.commit();
                 return false;
@@ -63,8 +63,7 @@ public class Preferences {
         SharedPreferences.Editor edit = _ctx.getSharedPreferences(_ctx.getString(R.string.prefs_key), Context.MODE_PRIVATE).edit();
         ArrayList<ReplicatorItem> items = getItems();
         for (ReplicatorItem it : items) {
-            if (it.getAccountName().equals(item.getAccountName()) && it.getDeliverName().equals(item.getDeliverName()) &&
-                    item.getSecretKey() == it.getSecretKey() && it.getCode().equals(item.getCode())) {
+            if (it.getAccountName().equals(item.getAccountName()) && it.getDeliverName().equals(item.getDeliverName())) {
                 items.remove(it);
                 break;
             }

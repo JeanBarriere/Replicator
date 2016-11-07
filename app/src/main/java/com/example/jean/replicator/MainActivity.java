@@ -1,8 +1,10 @@
 package com.example.jean.replicator;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,13 +12,16 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.jean.replicator.utils.CustomAdapter;
+import com.example.jean.replicator.utils.OtpURL;
 import com.example.jean.replicator.utils.Preferences;
 import com.google.zxing.integration.android.IntentIntegrator;
 
@@ -69,8 +74,35 @@ public class MainActivity extends AppCompatActivity {
             txt_no_account.setVisibility(View.INVISIBLE);
 
         // setting up the listview
-        adapter = new CustomAdapter(this, R.layout.list_row, Preferences.get(this).getItems(), txt_no_account);
+        adapter = new CustomAdapter(this, R.layout.list_row, Preferences.get(this).getItems());
         lv.setAdapter(adapter);
+
+        // if we catch a long click on the row, we alert the user if he want to delete the current entry
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, final View view, final int i, long l) {
+                adapter.getItem(i);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete entry")
+                        .setMessage("Are you sure you want to delete this entry?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Preferences.get(MainActivity.this).removeItem(adapter.getItem(i));
+                                adapter.remove(adapter.getItem(i));
+                                Snackbar.make(view, "Compte supprimé", Snackbar.LENGTH_LONG).show();
+                                adapter.notifyDataSetChanged();
+                                if (adapter.getCount() == 0)
+                                    txt_no_account.setVisibility(View.VISIBLE);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .setIcon(R.drawable.ic_action_delete)
+                        .show();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -82,48 +114,27 @@ public class MainActivity extends AppCompatActivity {
             ** So we have to parse the content and to add an Account into our list
             */
             if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
-                System.out.println("contents = " + contents);
-                try {
-                    contents = URLDecoder.decode(contents, "UTF-8");
-                    String secret = "";
-                    String issuer = "";
-                    List<String> items = Arrays.asList(Arrays.asList(contents.split("\\s*/\\s*")).get(3).split("\\s*\\?\\s*"));
-                    List<String> tinfos = Arrays.asList(items.get(1).split("\\s*\\&\\s*"));
-                    List<String> ainfos = Arrays.asList(items.get(0).split("\\s*:\\s*"));
-                    for (String in : tinfos)
-                    {
-                        List<String> kv = Arrays.asList(in.split("\\s*=\\s*"));
-                        if (kv.get(0).equals("secret"))
-                            secret = kv.get(1);
-                        else if (kv.get(0).equals("issuer"))
-                            issuer = kv.get(1);
-                    }
-                    String username = ainfos.get(0);
-                    if (ainfos.size() == 2)
-                        username = ainfos.get(1);
-                    if (username.length() == 0 || secret.length() == 0 || issuer.length() == 0) {
-                        Snackbar.make(findViewById(R.id.content_main), "QR Code invalide", Snackbar.LENGTH_LONG).show();
-                    }
-                    if (!Preferences.get(this).addItem(new ReplicatorItem(secret, issuer, username)))
-                        Snackbar.make(findViewById(R.id.content_main), "La clé du compte a été mise à jour", Snackbar.LENGTH_LONG).show();
-                    else
-                        Snackbar.make(findViewById(R.id.content_main), "Compte ajouté", Snackbar.LENGTH_LONG).show();
-                    if (Preferences.get(this).getItems().size() > 0)
-                        txt_no_account.setVisibility(View.INVISIBLE);
-                    adapter.clear();
-                    adapter.addAll(Preferences.get(this).getItems());
-                    adapter.notifyDataSetChanged();
-                } catch (UnsupportedEncodingException | IndexOutOfBoundsException e) {
+                OtpURL url = new OtpURL(data.getStringExtra("SCAN_RESULT"));
+                if (!url.parse()) {
                     Snackbar.make(findViewById(R.id.content_main), "QR Code invalide", Snackbar.LENGTH_LONG).show();
+                    return;
                 }
+                if (!Preferences.get(this).addItem(new ReplicatorItem(url.secret, url.issuer, url.account, url.digits)))
+                    Snackbar.make(findViewById(R.id.content_main), "La clé du compte a été mise à jour", Snackbar.LENGTH_LONG).show();
+                else
+                    Snackbar.make(findViewById(R.id.content_main), "Compte ajouté", Snackbar.LENGTH_LONG).show();
+                if (Preferences.get(this).getItems().size() > 0)
+                    txt_no_account.setVisibility(View.INVISIBLE);
+                adapter.clear();
+                adapter.addAll(Preferences.get(this).getItems());
+                adapter.notifyDataSetChanged();
             }
         }
     }
 
     /*
-    ** requestPermission for the camera, we need it to scan a QR Code
-    */
+        ** requestPermission for the camera, we need it to scan a QR Code
+        */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean requestCamera() {
         if (getBaseContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

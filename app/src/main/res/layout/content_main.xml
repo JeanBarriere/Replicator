@@ -11,7 +11,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.jean.replicator.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_main"
+    android:background="#e1e1e1">
 
     <TextView
         android:text="Ajoutez un compte pour commencer"
@@ -27,5 +28,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/listview"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:dividerHeight="20dp"
+        android:headerDividersEnabled="true"
+        android:divider="#e1e1e1"
+        android:footerDividersEnabled="true" />
 </RelativeLayout>

@@ -25,11 +25,8 @@ import java.util.List;
 
 public final class CustomAdapter extends ArrayAdapter<ReplicatorItem> {
 
-    private TextView txt_no_account;
-
-    public CustomAdapter(Context context, int resource, List<ReplicatorItem> items, TextView txt_no_account) {
+    public CustomAdapter(Context context, int resource, List<ReplicatorItem> items) {
         super(context, resource, items);
-        this.txt_no_account = txt_no_account;
     }
 
     @NonNull
@@ -41,34 +38,6 @@ public final class CustomAdapter extends ArrayAdapter<ReplicatorItem> {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
             v = vi.inflate(R.layout.list_row, null);
-
-            // if we catch a long click on the row, we alert the user if he want to delete the current entry
-            v.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(final View view) {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("Delete entry")
-                            .setMessage("Are you sure you want to delete this entry?")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Preferences.get(getContext()).removeItem(getItem(position));
-                                    remove(getItem(position));
-                                    Snackbar.make(view, "Compte supprimé", Snackbar.LENGTH_LONG).show();
-                                    notifyDataSetChanged();
-                                    if (getCount() == 0)
-                                        txt_no_account.setVisibility(View.VISIBLE);
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            .setIcon(R.drawable.ic_action_delete)
-                            .show();
-                    return false;
-                }
-            });
 
             if (getItem(position) != null) {
                 final TextView tt1 = (TextView) v.findViewById(R.id.txt_row_key);
